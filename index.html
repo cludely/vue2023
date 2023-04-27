@@ -12,14 +12,18 @@
   <script src="dist/vue.js"></script>
   <script>
     // umd 给window添加一个Vue
-    new Vue({
+    let vm = new Vue({
       el: "#app",
       data: {
-
+        msg: '你好',
+        obj: {a:1, b:2},
+        // list: [1,2,3,4,5]
       },
       props: {},
       watch: {},
     })
+
+    console.log(vm)
   </script>
 </body>
 </html>
