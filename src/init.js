@@ -7,6 +7,32 @@ export function initMixin(Vue) {
     vm._data = options.data
     // 初始化状态
     initState(vm)
+
+    // 渲染模板
+    if(vm.$options.el) {
+      vm.$mount(vm.$options.el)
+    }
+  }
+
+  Vue.prototype.$mount = function(el) {
+    let vm = this
+    // 获取根元素
+    el = document.querySelector(el)
+    let options = vm.$options
+    // 渲染优先级 render函数 > template > el
+    if(!options.render) {
+      let template = options.template
+      if(!template && el) {
+        // 获取html
+        el = el.outerHTML
+        console.log(el)
+      }
+    } else {
+
+    }
   }
 }
+
+
+
 
