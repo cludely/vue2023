@@ -2,7 +2,6 @@ import { observer } from "./observe/index";
 
 export function initState(vm) {
   let opts = vm.$options;
-  console.log(opts)
   if(opts.props) {
     initProps(vm)
   }
@@ -32,6 +31,7 @@ function initData(vm){
   data = typeof data === 'function' ? 
           data.call(vm) : data;
   // 2、将data数据上的所有属性代理到实例上
+  // 实现this.xxx 可以直接拿到 this.data.xxx 功能
   for(let key in data) {
     proxy(vm, "_data", key)
   }
@@ -39,8 +39,11 @@ function initData(vm){
   observer(data)
 }
 
+/**
+ * 将 vm 实例上的 source 属性下的 key 属性直接代理到 vm 下
+ * 实现 this.xxx 可以直接拿到 this.data.xxx 的功能
+ */
 function proxy(vm, source, key) {
-  console.log(source, key, vm)
   Object.defineProperty(vm, key, {
     get() {
       return vm[source][key]

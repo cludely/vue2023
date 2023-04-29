@@ -9,7 +9,6 @@ export function observer(data) {
   if(typeof data != 'object' || data == null) {
     return data;
   }
-  console.log(data)
   return new Observer(data)
 }
 
