@@ -1,26 +1,49 @@
-/**
- * 响应式原理
- */
+import { ArrayMethods } from "./arr";
 
+/**
+ * 将传入的对象转化成响应式对象
+ * @param {*} data 
+ * @returns 
+ */
 export function observer(data) {
   if(typeof data != 'object' || data == null) {
     return data;
   }
+  console.log(data)
   return new Observer(data)
 }
 
+
 class Observer{
-  constructor(obj) {
-    this.walk(obj)
+  constructor(value) {
+    // 定义一个不可枚举的属性__ob__,指向当前实例
+    Object.defineProperty(value, "__ob__", {
+      enumerable: false,
+      value: this
+    })
+    // 判断数据是数组还是对象
+    if(Array.isArray(value)) {
+      value.__proto__ = ArrayMethods
+      // 处理数组对象 [{}, {}, {}...]
+      this.observeArray(value)
+    } else {
+      this.walk(value)
+    }
   }
   // 遍历对象中的所有属性
-  walk(obj) {
-    let keys = Object.keys(obj)
-    // 对每个data中的属性进行观察劫持
+  walk(data) {
+    let keys = Object.keys(data)
     for(let i = 0;i < keys.length; i++) {
       let key = keys[i] // 属性
-      let value = obj[key] // 值
-      defineReactive(obj, key, value)
+      let value = data[key] // 值
+      defineReactive(data, key, value)
+    }
+  }
+
+  // 处理数组对象 [{}, {}, {}...]
+  observeArray(value) {
+    for(let i = 0;i < value.length; i++) {
+      observer(value[i])
     }
   }
 }

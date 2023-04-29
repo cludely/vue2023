@@ -17,12 +17,14 @@
       data: {
         msg: '你好',
         obj: {a:1, b:2},
-        // list: [1,2,3,4,5]
+        list: [1,2,3,4,5],
+        arr: [{a:1}, {b:2}, {d: [11,22,33]}]
       },
       props: {},
       watch: {},
     })
 
+    console.log(vm.$options.data.arr.push({c:3}))
     console.log(vm)
   </script>
 </body>
