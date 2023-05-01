@@ -1,4 +1,5 @@
 import { initState } from "./initState"
+import { compileToFunction } from './compile/index'
 export function initMixin(Vue) {
   // 将初始化方法添加到Vue实例的原型链上
   Vue.prototype._init = function(options) {
@@ -23,9 +24,9 @@ export function initMixin(Vue) {
     if(!options.render) {
       let template = options.template
       if(!template && el) {
-        // 获取html
-        el = el.outerHTML
-        console.log(el)
+        el = el.outerHTML // 获取html
+        // 将html变成AST语法树
+        let ast = compileToFunction(el)
       }
     } else {
 
