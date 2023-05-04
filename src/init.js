@@ -22,6 +22,7 @@ export function initMixin(Vue) {
     let vm = this
     // 获取根元素
     el = document.querySelector(el)
+    vm.$el = el
     let options = vm.$options
     // 渲染优先级 render函数 > template > el
     if(!options.render) {

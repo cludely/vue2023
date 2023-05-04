@@ -6,7 +6,6 @@ export function renderMinxin(Vue) {
     let vm = this
     let render = vm.$options.render
     let vnode = render.call(this)
-    console.log('虚拟节点===>', vnode)
     return vnode
   }
 
