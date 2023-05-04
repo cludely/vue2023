@@ -62,6 +62,7 @@ function gen(node) {
 
 export function generate(el) {
   let children = genChildren(el)
-  let code = `_c(${el.tag},${el.attrs.length ? `${genProps(el.attrs)}` : 'null'},${children ? `${children}` : 'null'})`
+  let code = `_c('${el.tag}',${el.attrs.length ? `${genProps(el.attrs)}` : 'undefined'}${children ? `,${children}` : ''})`
   console.log(code)
+  return code
 }
