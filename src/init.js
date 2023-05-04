@@ -1,5 +1,8 @@
 import { initState } from "./initState"
 import { compileToFunction } from './compile/index'
+import { mountComponent } from './lifecycle'
+
+
 export function initMixin(Vue) {
   // 将初始化方法添加到Vue实例的原型链上
   Vue.prototype._init = function(options) {
@@ -25,12 +28,16 @@ export function initMixin(Vue) {
       let template = options.template
       if(!template && el) {
         el = el.outerHTML // 获取html
-        // 将html变成AST语法树
-        let ast = compileToFunction(el)
+        // 将html变成render函数
+        let render = compileToFunction(el)
+        console.log('render函数===>', render)
+        // 将render函数放到实例上
+        options.render = render
       }
-    } else {
-
     }
+
+    // 挂载组件
+    mountComponent(vm, el)
   }
 }
 

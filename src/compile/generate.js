@@ -46,7 +46,7 @@ function gen(node) {
       let index = match.index
       // 添加内容
       if (index > lastIndex) {
-        tokens.push(JSON.stringify(text).slice(lastIndex))
+        tokens.push(JSON.stringify(text.slice(lastIndex, index)))
       }
       // 处理插值表达式
       tokens.push(`_s(${match[1].trim()})`)
