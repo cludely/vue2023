@@ -46,7 +46,7 @@ function start(tag, attrs) {
  * @param {*} text 
  */
 function charts(text) {
-  text = text.replace(/s/g, '')
+  text = text.replace(/\s/g, '')
   if (text) {
     createParent.children.push({
       type: 3,
