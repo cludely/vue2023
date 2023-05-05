@@ -10,7 +10,9 @@ export const HOOKS = [
 ]
 
 let starts = {}
-starts.data = function () { }
+starts.data = function (parentVal, childVal) {
+  return childVal
+}
 starts.computed = function () { }
 starts.watch = function () { }
 starts.methods = function () { }
@@ -21,7 +23,7 @@ HOOKS.forEach(hooks => {
 
 function mergeHook(parentVal, childVal) {
   if (childVal) {
-    if(parentVal) {
+    if (parentVal) {
       return parentVal.concat(childVal)
     } else {
       return [childVal]
@@ -51,5 +53,7 @@ export function mergeOptions(parent, child) {
       options[key] = child[key]
     }
   }
+
+
   return options
 }
