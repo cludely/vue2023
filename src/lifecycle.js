@@ -12,7 +12,7 @@ export function liftcycleMixin(Vue) {
    * 将vnode变成真实DOM再放到页面上
    */
   Vue.prototype._update = function (vnode) {
-    console.log('虚拟节点===>', vnode)
+    // console.log('虚拟节点===>', vnode)
     let vm = this
     vm.$el = patch(vm.$el, vnode)
   }

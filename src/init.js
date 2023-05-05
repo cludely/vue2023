@@ -31,7 +31,7 @@ export function initMixin(Vue) {
         el = el.outerHTML // 获取html
         // 将html变成render函数
         let render = compileToFunction(el)
-        console.log('render函数===>', render)
+        // console.log('render函数===>', render)
         // 将render函数放到实例上
         options.render = render
       }
