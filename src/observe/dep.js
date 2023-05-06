@@ -8,7 +8,7 @@ class Dep {
 
   // 收集watcher
   depend() {
-    this.subs.push()
+    this.subs.push(Dep.target)
   }
 
   // 更新watcher
@@ -29,3 +29,5 @@ export function pushTarget(watcher) {
 export function popTarget() {
   Dep.target = null
 }
+
+export default Dep

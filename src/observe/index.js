@@ -1,5 +1,7 @@
 import { ArrayMethods } from "./arr";
 
+import Dep from './dep'
+
 /**
  * 将传入的对象转化成响应式对象
  * @param {*} data 
@@ -51,9 +53,14 @@ class Observer{
 function defineReactive(object, key, value) {
   // 1、当属性的值类型为Object时，进行递归
   observer(value)
+  let dep = new Dep() // 给每一个属性添加一个dep
   // 2、观察劫持这个属性
   Object.defineProperty(object, key, {
     get() {
+      // 收集依赖 watcher
+      if(Dep.target) {
+        dep.depend()
+      }
       return value
     },
     set(newValue) {
@@ -61,7 +68,7 @@ function defineReactive(object, key, value) {
       // 3、新设置的值也需要重新进行劫持
       observer(newValue)  
       value = newValue;
-      
+      dep.notify()  // 更新页面
     }
   })
 }

@@ -26,7 +26,7 @@ class watcher {
 
   // 更新
   update() {
-
+    this.get()
   }
 }
 
