@@ -43,6 +43,11 @@
     // .$mount("#app")
     // console.log(vm.$options.data.arr.push({c:3}))
     console.log(vm)
+
+    setTimeout(() => {
+      vm.msg = '张三'
+      // vm._update(vm._render())
+    }, 1000)
   </script>
 </body>
 </html>
