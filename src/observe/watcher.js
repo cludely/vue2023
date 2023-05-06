@@ -11,12 +11,26 @@ class watcher {
     this.cb = cb
     this.options = options
     this.id = id++
+    this.deps = []  // 存放dep
+    this.depsId = new Set() // 存放depid
     // 判断
-    if(typeof updateComponent === 'function') {
+    if (typeof updateComponent === 'function') {
       this.getter = updateComponent
     }
     this.get()
   }
+
+  // 添加dep
+  addDep(dep) {
+    // 1.去重
+    let id = dep.id
+    if (!this.depsId.has(id)) {
+      this.deps.push(dep)
+      this.depsId.add(id)
+      dep.addSub(this)
+    }
+  }
+
   // 用来初次渲染
   get() {
     pushTarget(this)  // 给dep添加watcher
