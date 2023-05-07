@@ -22,6 +22,7 @@ class Observer{
       enumerable: false,
       value: this
     })
+    this.dep = new Dep()
     // 判断数据是数组还是对象
     if(Array.isArray(value)) {
       value.__proto__ = ArrayMethods
@@ -52,7 +53,8 @@ class Observer{
 // 对对象中的某个属性进行劫持
 function defineReactive(object, key, value) {
   // 1、当属性的值类型为Object时，进行递归
-  observer(value)
+ let childDep = observer(value)
+ console.log('childDep===>', childDep)
   let dep = new Dep() // 给每一个属性添加一个dep
   // 2、观察劫持这个属性
   Object.defineProperty(object, key, {
@@ -60,6 +62,9 @@ function defineReactive(object, key, value) {
       // 收集依赖 watcher
       if(Dep.target) {
         dep.depend()
+        if(childDep.dep) {
+          childDep.dep.depend() // 数组收集
+        }
       }
       return value
     },

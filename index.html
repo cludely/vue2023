@@ -7,7 +7,11 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="app" style="color: red;font-size: 16px;">hello {{ msg }}<h2>你好</h2></div>
+  <div id="app" style="color: red;font-size: 16px;">
+    hello {{ msg }}
+    <h2>你好</h2>
+    <h2>{{arr}}</h2>
+  </div>
 
   <script src="dist/vue.js"></script>
 
@@ -46,6 +50,7 @@
 
     setTimeout(() => {
       vm.msg = '张三'
+      vm.arr.push('hahahah')
     }, 1000)
   </script>
 </body>
