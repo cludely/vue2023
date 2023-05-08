@@ -55,7 +55,10 @@ let has = {}
 let pending = false
 
 function flushWatcher() {
-  queue.forEach(watcher => watcher.run())
+  queue.forEach(watcher => {
+    watcher.run()
+    watcher.cb()
+  })
   queue = []
   has = {}
   pending = false

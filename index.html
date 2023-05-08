@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <div id="app" style="color: red;font-size: 16px;">
     hello {{ msg }}
@@ -16,16 +18,16 @@
   <script src="dist/vue.js"></script>
 
   <script>
-    Vue.mixin({
-      created: function a() {
-        console.log('created')
-      }
-    })
-    Vue.mixin({
-      created: function b() {
-        console.log('created')
-      }
-    })
+    // Vue.mixin({
+    //   created: function a() {
+    //     console.log('created')
+    //   }
+    // })
+    // Vue.mixin({
+    //   created: function b() {
+    //     console.log('created')
+    //   }
+    // })
   </script>
 
   <script>
@@ -34,14 +36,17 @@
       el: "#app",
       data: {
         msg: '你好',
-        obj: {a:1, b:2},
-        list: [1,2,3,4,5],
-        arr: [{a:1}, {b:2}, {d: [11,22,33]}]
+        obj: { a: 1, b: 2 },
+        list: [1, 2, 3, 4, 5],
+        arr: [{ a: 1 }, { b: 2 }, { d: [11, 22, 33] }]
       },
       props: {},
       watch: {},
       created() {
         console.log('hello world')
+      },
+      updated() {
+        console.log('updated')
       }
     })
     // .$mount("#app")
@@ -58,4 +63,5 @@
     }, 1000)
   </script>
 </body>
+
 </html>
