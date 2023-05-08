@@ -50,7 +50,11 @@
 
     setTimeout(() => {
       vm.msg = '张三'
-      // vm.arr.push('hahahah')
+      vm.arr.push('hahahah')
+
+      vm.$nextTick(() => {
+        console.log(vm.$el.innerHTML)
+      })
     }, 1000)
   </script>
 </body>

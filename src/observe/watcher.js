@@ -1,5 +1,5 @@
 import { pushTarget, popTarget } from "./dep"
-
+import { nextTick } from '../utils/nextTick'
 
 // 通过这个watcher 实现更新
 let id = 0
@@ -53,6 +53,14 @@ class watcher {
 let queue = []  // 将需要更新的watcher暂存在一个列队中
 let has = {}
 let pending = false
+
+function flushWatcher() {
+  queue.forEach(watcher => watcher.run())
+  queue = []
+  has = {}
+  pending = false
+}
+
 function queueWatcher(watcher) {
   let id = watcher.id
   if (has[id] == null) { //去重
@@ -60,12 +68,14 @@ function queueWatcher(watcher) {
     has[id] = true
     // 防抖,防止用户触发多次更新
     if (!pending) {
-      setTimeout(() => {
-        queue.forEach(watcher => watcher.run())
-        queue = []
-        has = {}
-        pending = false
-      }, 4)
+      /**
+       * 当用户修改数据，并调用 vm.$nextTick(fn) 后
+       * 1. 用户修改数据时，触发更新watcher，向 nextTick 中传入一个更新渲染的函数 flushWatcher
+       * 2. 用户调用 vm.$nextTick(fn), 又向 nextTick 中传入第二个用户函数
+       * 3. 当同步代码执行完毕后，开始执行异步代码，此时nextTick中有两个函数待执行
+       * 所以nextTick是先调用了一次更新页面的函数 flushWatcher，再执行用户函数，所以用户可以立即获取到最新的DOM
+       */
+      nextTick(flushWatcher)
     }
     pending = true
   }
