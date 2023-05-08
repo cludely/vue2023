@@ -40,9 +40,37 @@ class watcher {
 
   // 更新
   update() {
+    // this.get()
+    // 异步
+    queueWatcher(this)
+  }
+
+  run() {
     this.get()
   }
 }
+
+let queue = []  // 将需要更新的watcher暂存在一个列队中
+let has = {}
+let pending = false
+function queueWatcher(watcher) {
+  let id = watcher.id
+  if (has[id] == null) { //去重
+    queue.push(watcher)
+    has[id] = true
+    // 防抖,防止用户触发多次更新
+    if (!pending) {
+      setTimeout(() => {
+        queue.forEach(watcher => watcher.run())
+        queue = []
+        has = {}
+        pending = false
+      }, 4)
+    }
+    pending = true
+  }
+}
+
 
 
 export default watcher

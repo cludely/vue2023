@@ -54,7 +54,6 @@ class Observer{
 function defineReactive(object, key, value) {
   // 1、当属性的值类型为Object时，进行递归
  let childDep = observer(value)
- console.log('childDep===>', childDep)
   let dep = new Dep() // 给每一个属性添加一个dep
   // 2、观察劫持这个属性
   Object.defineProperty(object, key, {
