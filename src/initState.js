@@ -4,14 +4,14 @@ import watcher from './observe/watcher';
 
 export function initState(vm) {
   let opts = vm.$options;
-  if (opts.props) {
-    initProps(vm)
-  }
   if (opts.data) {
     initData(vm)
   }
   if (opts.watch) {
     initWatch(vm)
+  }
+  if (opts.props) {
+    initProps(vm)
   }
   if (opts.computed) {
     initComputed(vm)

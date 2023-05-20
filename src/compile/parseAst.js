@@ -8,66 +8,7 @@ const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s
 export const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;  // 匹配{{ }}
 
 
-/**
- * 创建AST语法树
- * @param {*} tag 标签名称
- * @param {*} attrs  标签属性
- * @returns 
- */
-function createASTElement(tag, attrs) {
-  return {
-    tag,  // 元素标签名div
-    attrs,  // 属性
-    children: [], // 子节点
-    type: 1,
-    parent: null, // 父元素
-  }
-}
 
-let root; // 根元素
-let createParent; // 当前元素的父元素
-let stack = []; // 栈
-/**
- * 处理开始标签压栈
- * @param {*} tag 
- * @param {*} attrs 
- */
-function start(tag, attrs) {
-  let element = createASTElement(tag, attrs)
-  if (!root) {
-    root = element
-  }
-  createParent = element
-  stack.push(element)
-}
-
-/**
- * 处理文本压栈
- * @param {*} text 
- */
-function charts(text) {
-  text = text.replace(/\s/g, '')
-  if (text) {
-    createParent.children.push({
-      type: 3,
-      text,
-    })
-  }
-}
-
-/**
- * 处理闭合标签压栈
- * @param {*} tag 
- */
-function end(tag) {
-  let element = stack.pop()
-  createParent = stack[stack.length - 1]
-  if (createParent) {
-    // 元素闭合
-    element.parent = createParent.tag
-    createParent.children.push(element)
-  }
-}
 
 
 
@@ -77,6 +18,68 @@ function end(tag) {
  * @returns 返回解析完成的AST语法树
  */
 export function parseHTML(html) {
+
+  /**
+ * 创建AST语法树
+ * @param {*} tag 标签名称
+ * @param {*} attrs  标签属性
+ * @returns 
+ */
+  function createASTElement(tag, attrs) {
+    return {
+      tag,  // 元素标签名div
+      attrs,  // 属性
+      children: [], // 子节点
+      type: 1,
+      parent: null, // 父元素
+    }
+  }
+
+  let root; // 根元素
+  let createParent; // 当前元素的父元素
+  let stack = []; // 栈
+  /**
+   * 处理开始标签压栈
+   * @param {*} tag 
+   * @param {*} attrs 
+   */
+  function start(tag, attrs) {
+    let element = createASTElement(tag, attrs)
+    if (!root) {
+      root = element
+    }
+    createParent = element
+    stack.push(element)
+  }
+
+  /**
+   * 处理文本压栈
+   * @param {*} text 
+   */
+  function charts(text) {
+    text = text.replace(/\s/g, '')
+    if (text) {
+      createParent.children.push({
+        type: 3,
+        text,
+      })
+    }
+  }
+
+  /**
+   * 处理闭合标签压栈
+   * @param {*} tag 
+   */
+  function end(tag) {
+    let element = stack.pop()
+    createParent = stack[stack.length - 1]
+    if (createParent) {
+      // 元素闭合
+      element.parent = createParent.tag
+      createParent.children.push(element)
+    }
+  }
+
   while (html) {
     // 1、解析标签
     let textEnd = html.indexOf('<')

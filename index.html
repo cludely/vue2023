@@ -9,59 +9,16 @@
 </head>
 
 <body>
-  <div id="app" style="color: red;font-size: 16px;">
-    hello {{ msg }}
-    <h2>你好</h2>
-    <h2>{{arr}}</h2>
+  <div id="app">
+
   </div>
 
   <script src="dist/vue.js"></script>
 
   <script>
-    // Vue.mixin({
-    //   created: function a() {
-    //     console.log('created')
-    //   }
-    // })
-    // Vue.mixin({
-    //   created: function b() {
-    //     console.log('created')
-    //   }
-    // })
+    
   </script>
 
-  <script>
-    // umd 给window添加一个Vue
-    let vm = new Vue({
-      el: "#app",
-      data: {
-        msg: '你好',
-        obj: { a: 1, b: 2 },
-        list: [1, 2, 3, 4, 5],
-        arr: [{ a: 1 }, { b: 2 }, { d: [11, 22, 33] }]
-      },
-      props: {},
-      watch: {},
-      created() {
-        console.log('hello world')
-      },
-      updated() {
-        console.log('updated')
-      }
-    })
-    // .$mount("#app")
-    // console.log(vm.$options.data.arr.push({c:3}))
-    console.log(vm)
-
-    setTimeout(() => {
-      vm.msg = '张三'
-      vm.arr.push('hahahah')
-
-      vm.$nextTick(() => {
-        console.log(vm.$el.innerHTML)
-      })
-    }, 1000)
-  </script>
 </body>
 
 </html>
