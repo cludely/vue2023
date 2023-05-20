@@ -15,7 +15,7 @@ export function patch(oldVnode, vnode) {
     parentEl.removeChild(oldVnode)
     return el
   } else {  // diff算法
-    console.log(oldVnode, vnode)  // bug
+    // console.log(oldVnode, vnode)  // bug
     // 1、最外层元素标签不一样
     if (oldVnode.tag !== vnode.tag) {
       oldVnode.el.parentNode.replaceChild(createEl(vnode), oldVnode.el)
@@ -51,8 +51,87 @@ export function patch(oldVnode, vnode) {
 }
 
 // diff
-function updataChild(oldChildren, newChildren, el) {
+function updataChild(oldChildren, newChildren, parent) {
+  // 1、创建双指针
+  let oldStartIndex = 0;
+  let oldStartVnode = oldChildren[oldStartIndex];
+  let oldEndIndex = oldChildren.length - 1;
+  let oldEndVnode = oldChildren[oldEndIndex];
 
+  let newStartIndex = 0;
+  let newStartVnode = newChildren[newStartIndex];
+  let newEndIndex = newChildren.length - 1;
+  let newEndVnode = newChildren[newEndIndex];
+
+  // 判断是否时同一个元素
+  function isSameVnode(node1, node2) {
+    return node1.tag === node2.tag && node1.key === node2.key
+  }
+  // 创建旧元素映射表
+  function makeIndexByKey(nodeList) {
+    let map = {}
+    nodeList.forEach((item, index) => {
+      if (item.key) {
+        map[item.key] = index
+      }
+    })
+    return map
+  }
+
+  let map = makeIndexByKey(oldChildren)
+  // console.log('map===>', map)
+  // 2、遍历
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    // 2.1 比对子元素
+    if (isSameVnode(oldStartVnode, newStartVnode)) {
+      patch(oldStartVnode, newStartVnode) //  递归
+      oldStartVnode = oldChildren[++oldStartIndex]
+      newStartVnode = newChildren[++newStartIndex]
+    } else if (isSameVnode(oldEndVnode, newEndVnode)) {
+      patch(oldEndVnode, newEndVnode)
+      oldEndVnode = oldChildren[--oldEndIndex]
+      newEndVnode = newChildren[--newEndIndex]
+    } else if (isSameVnode(oldStartVnode, newEndVnode)) {
+      patch(oldStartVnode, newEndVnode)
+      oldStartVnode = oldChildren[++oldStartIndex]
+      newEndVnode = newChildren[--newEndIndex]
+    } else if (isSameVnode(oldEndVnode, newStartVnode)) {
+      patch(oldEndVnode, newStartVnode)
+      oldEndVnode = oldChildren[--oldEndIndex]
+      newStartVnode = newChildren[++newStartIndex]
+    } else {
+      // 2.2、暴力比对
+      // 2.2.1、创建旧元素映射表
+      // 2.2.2、从老节点中寻找可复用的元素
+      let moveIndex = map[newStartVnode.key]
+      if (moveIndex == undefined) {
+        parent.insertBefore(createEl(newStartVnode), oldStartVnode.el)
+      } else {
+        let moveVnode = oldChildren[moveIndex]  // 获取到要移动的元素
+        oldChildren[moveIndex] = null // 防止数组塌陷
+        parent.insertBefore(moveVnode.el, oldStartVnode.el)
+        // 移动的元素可能有子节点
+        patch(moveVnode, newStartVnode)
+      }
+      newStartVnode = newChildren[++newStartIndex]
+    }
+  }
+
+  // 3、添加新增的节点
+  if (newStartIndex <= newEndIndex) {
+    for (let i = newStartIndex; i <= newEndIndex; i++) {
+      parent.appendChild(createEl(newChildren[i]))
+    }
+  }
+  // 4、去掉旧节点中多余的元素
+  if (oldStartIndex <= oldEndIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      let child = oldChildren[i]
+      if (child != null) {
+        parent.removeChild(child.el)
+      }
+    }
+  }
 }
 
 

@@ -23,7 +23,15 @@ export function liftcycleMixin(Vue) {
   Vue.prototype._update = function (vnode) {
     // console.log('虚拟节点===>', vnode)
     let vm = this
-    vm.$el = patch(vm.$el, vnode)
+    // 需要区分是首次渲染还是更新
+    let preVnode = vm._vnode  // 如果是首次渲染，值为null
+    if (!preVnode) {
+      vm.$el = patch(vm.$el, vnode)
+      vm._vnode = vnode
+    } else {
+      patch(preVnode, vnode)
+    }
+
   }
 }
 
