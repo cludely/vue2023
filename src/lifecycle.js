@@ -1,5 +1,4 @@
 import { patch } from "./vnode/patch"
-import watch from './observe/watcher'
 import watcher from "./observe/watcher"
 
 export function mountComponent(vm, el) {

@@ -1,23 +1,25 @@
 import { pushTarget, popTarget } from "./dep"
 import { nextTick } from '../utils/nextTick'
 
-// 通过这个watcher 实现更新
 let id = 0
+
+/**
+ * 观察者
+ */
 class watcher {
   constructor(vm, updateComponent, cb, options) {
-    // (1)
     this.vm = vm
     this.exprOrfn = updateComponent
     this.cb = cb
     this.options = options
     this.id = id++
     this.user = !!options.user
-    this.deps = []  // 存放dep
+    this.deps = []  // 存放dep, 发布者
     this.depsId = new Set() // 存放depid
     // 判断
     if (typeof updateComponent === 'function') {
       this.getter = updateComponent
-    } else { // 字符串变成函数
+    } else {
       // watch: { 'a.b.c': function... }
       this.getter = function () {
         let path = updateComponent.split('.')
@@ -53,8 +55,6 @@ class watcher {
 
   // 更新
   update() {
-    // this.get()
-    // 异步
     queueWatcher(this)
   }
 
@@ -75,7 +75,6 @@ let pending = false
 function flushWatcher() {
   queue.forEach(watcher => {
     watcher.run()
-    // watcher.cb()
   })
   queue = []
   has = {}

@@ -1,16 +1,17 @@
 import watcher from "./watcher"
-
-// dep 与 watcher的关系：一对多，多对多 dep.name = [watcher1,watcher2...]
+/**
+ * 发布者
+ * 作用：搜集依赖，即watcher对象
+ */
 let id = 0
 class Dep {
   constructor() {
-    this.subs = []  // 存放watcher
+    this.subs = []  // 存放所有的观察者watcher
     this.id = id++
   }
 
-  // 收集watcher
+  // 收集依赖, watcher
   depend() {
-    // this.subs.push(Dep.target)
     Dep.target.addDep(this)
   }
 
@@ -18,7 +19,7 @@ class Dep {
     this.subs.push(watcher)
   }
 
-  // 更新watcher
+  // 发送通知，更新
   notify() {
     this.subs.forEach(watcher => {
       watcher.update()
@@ -27,7 +28,6 @@ class Dep {
 }
 
 
-// 添加watcher
 Dep.target = null
 export function pushTarget(watcher) {
   Dep.target = watcher
