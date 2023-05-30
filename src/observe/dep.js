@@ -29,12 +29,18 @@ class Dep {
 
 
 Dep.target = null
+// 处理多个watcher
+let stack = []  // 栈，保存多个watcher
 export function pushTarget(watcher) {
   Dep.target = watcher
+  stack.push(watcher)
 }
 
 export function popTarget() {
-  Dep.target = null
+  // Dep.target = null
+  // 解析玩一个watcher就删除一个watcher
+  stack.pop()
+  Dep.target = stack[stack.length - 1]
 }
 
 export default Dep

@@ -16,6 +16,8 @@ class watcher {
     this.user = !!options.user
     this.deps = []  // 存放dep, 发布者
     this.depsId = new Set() // 存放depid
+    this.lazy = options.lazy  // 如果watcher上有lazy为true,说明是computed的watcher
+    this.dirty = this.lazy  // dirty 脏值检查，标识用户是否执行
     // 判断
     if (typeof updateComponent === 'function') {
       this.getter = updateComponent
@@ -31,7 +33,7 @@ class watcher {
       }
     }
     // 执行渲染页面
-    this.value = this.get()  // 保存watch旧值
+    this.value = this.lazy ? void 0 : this.get()  // 保存watch旧值
   }
 
   // 添加dep
@@ -48,14 +50,33 @@ class watcher {
   // 用来初次渲染
   get() {
     pushTarget(this)  // 给dep添加watcher
-    const value = this.getter() // 更新页面
+    const value = this.getter.call(this.vm) // 更新页面
     popTarget() // 给dep取消watcher
     return value
   }
 
   // 更新
   update() {
-    queueWatcher(this)
+    if (this.lazy) {
+      this.dirty = true
+    } else {
+      queueWatcher(this)
+    }
+  }
+
+  evaluate() {
+    this.value = this.get()
+    this.dirty = false
+  }
+  /**
+   * 相互收集watcher
+   */
+  depend() {
+    // 收集watcher，双向
+    let i = this.deps.length
+    while (i--) {
+      this.deps[i].depend()
+    }
   }
 
   run() {
@@ -66,6 +87,7 @@ class watcher {
       this.cb.call(this.vm, value, oldValue)
     }
   }
+
 }
 
 let queue = []  // 将需要更新的watcher暂存在一个列队中

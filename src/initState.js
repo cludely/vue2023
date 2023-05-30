@@ -1,6 +1,7 @@
 import { observer } from "./observe/index";
 import { nextTick } from "./utils/nextTick";
-import watcher from './observe/watcher';
+import Watcher from './observe/watcher';
+import Dep from "./observe/dep";
 
 export function initState(vm) {
   let opts = vm.$options;
@@ -21,9 +22,60 @@ export function initState(vm) {
   }
 }
 
-function initComputed() { }
+function initComputed(vm) {
+  let computed = vm.$options.computed
+  // 每个计算属性都需要一个watcher
+  let watchers = vm._computedWatchers = {}
+  // 将computed属性通过Object.definedProperty进行处理
+  for (let key in computed) {
+    let userDef = computed[key]
+    let getter = typeof userDef == 'function' ? userDef : userDef.get
+    // 给每一个计算属性添加watcher
+    watchers[key] = new Watcher(vm, getter, () => { }, { lazy: true })
+    defineComputed(vm, key, userDef)
+  }
+}
+
+let sharedPropDefinition = {}
+function defineComputed(target, key, userDef) {
+  sharedPropDefinition = {
+    enumerable: true,
+    configurable: true,
+    get: () => { },
+    set: () => { }
+  }
+  // 处理 userDef 的格式
+  if (typeof userDef == 'function') {
+    sharedPropDefinition.get = createComputedGetter(key)
+  } else {
+    sharedPropDefinition.get = createComputedGetter(key)
+    sharedPropDefinition.set = userDef.set
+  }
+  Object.defineProperty(target, key, sharedPropDefinition)
+}
+/**
+ * 返回用户的计算属性方法
+ */
+function createComputedGetter(key) {
+  return function () {
+    let watcher = this._computedWatchers[key]
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate()
+      }
+      if (Dep.target) {  // 说明还有watcher，应该收集起来
+        watcher.depend()
+      }
+      return watcher.value
+    }
+  }
+}
+
+
 function initMethods() { }
+
 function initProps() { }
+
 function initWatch(vm) {
   // 1、获取watch
   let watch = vm.$options.watch
@@ -90,7 +142,7 @@ export function stateMinxin(vm) {
   }
 
   vm.prototype.$watch = function (Vue, exprOrfn, handler, options = {}) {
-    let watch = new watcher(Vue, exprOrfn, handler, {...options, user: true})
+    let watch = new Watcher(Vue, exprOrfn, handler, { ...options, user: true })
     if (options.immediate) {
       handler.call(Vue)
     }
