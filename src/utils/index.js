@@ -50,7 +50,7 @@ export function mergeOptions(parent, child) {
     if (starts[key]) {  // 合并HOOKS
       options[key] = starts[key](parent[key], child[key])
     } else {
-      options[key] = child[key]
+      options[key] = child[key] || parent[key]
     }
   }
 

@@ -11,34 +11,27 @@
 <body>
   <div id="app">
     <h2>你好</h2>
-    <h2>{{ fullName }}</h2>
   </div>
 
   <script src="dist/vue.js"></script>
 
   <script>
+    Vue.component('my-button', {
+      template: `<button>我的按钮</button>`
+    })
+
     let vm = new Vue({
       el: '#app',
       data: {
         fristName: '张',
         lastName: '三',
       },
-      watch: {
-        'fristName': (newValue) => {
-          console.log(newValue)
-        }
-      },
-      computed: {
-        fullName() {
-          return this.fristName + this.lastName
-        }
-      }
+      // components: {
+      //   'my-button': {
+      //     template: `<button>内部按钮</button>`
+      //   },
+      // },
     })
-
-    setTimeout(() => {
-      vm.fristName = '李四'
-    }, 2000)
-    console.log(vm.fullName)
     
   </script>
 
