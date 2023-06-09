@@ -5,6 +5,9 @@
  * @returns 
  */
 export function patch(oldVnode, vnode) {
+  if (!oldVnode) {
+    return createEl(vnode)
+  }
   // 第一次渲染时oldVnode是真实DOM
   if (oldVnode.nodeType === 1) {
     // 1、创建新的DOM
@@ -173,17 +176,32 @@ function updataProps(vnode, oldProps = {}) {
  * @param {*} vnode 
  */
 export function createEl(vnode) {
-  let { tag, children, key, data, text } = vnode
-  if (typeof tag === 'string') { // 标签
-    vnode.el = document.createElement(tag)
-    updataProps(vnode)
-    if (children && children.length > 0) {
-      children.forEach(child => {
-        vnode.el.appendChild(createEl(child)) // 递归
-      });
+  let { vm, tag, children, key, data, text } = vnode
+  if (typeof tag === 'string') { // 标签、组件
+    if (createComponent(vnode)) {
+      return vnode.componentInstance.$el
+    } else {
+      vnode.el = document.createElement(tag)
+      updataProps(vnode)
+      if (children && children.length > 0) {
+        children && children.forEach(child => {
+          vnode.el.appendChild(createEl(child)) // 递归
+        });
+      }
     }
   } else {  // 文本
     vnode.el = document.createTextNode(text)
   }
   return vnode.el
+}
+
+function createComponent(vnode) {
+  let i = vnode.data
+  if ((i = i.hook) && (i = i.init)) {
+    i(vnode)  // 创建子组件的实例
+  }
+  if (vnode.componentInstance) {
+    return true
+  }
+  return false
 }

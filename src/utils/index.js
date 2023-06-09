@@ -16,6 +16,17 @@ starts.data = function (parentVal, childVal) {
 // starts.computed = function () { }
 // starts.watch = function () { }
 // starts.methods = function () { }
+
+starts.components = function (parentVal, childVal) {
+  const obj = Object.create(parentVal)
+  if (childVal) {
+    for (let key in childVal) {
+      obj[key] = childVal[key]
+    }
+  }
+  return obj
+}
+
 // 遍历生命周期HOOKS
 HOOKS.forEach(hooks => {
   starts[hooks] = mergeHook

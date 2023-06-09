@@ -7,7 +7,7 @@ export function initMixin(Vue) {
   // 将初始化方法添加到Vue实例的原型链上
   Vue.prototype._init = function (options) {
     let vm = this
-    vm.$options = mergeOptions(Vue.options, options)
+    vm.$options = mergeOptions(this.constructor.options, options)
     vm._data = options.data
     callHook(vm, 'beforeCreated')
     // 初始化状态
